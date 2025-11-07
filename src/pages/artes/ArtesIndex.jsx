@@ -12,9 +12,9 @@ const ArtesIndex = () => {
     //declaramos ela como async pois iremos utilizar await dentro dela
     const fetchArtes = async () => {
       const response = await fetch("http://localhost:3000/api/artes")
-      console.log(response);
+      // console.log(response);
       const data = await response.json(); //converto os dados dentro de response para JSON
-      console.log(data);
+      // console.log(data);
       setArtes(data);
     }
     fetchArtes(); //chamando a função que foi declarada acima
@@ -28,8 +28,8 @@ const ArtesIndex = () => {
         <Navbar />
         <h3>ArtesIndex</h3>
         <Link to="/artes/create" className='btn btn-primary'>Criar</Link>
-        <div class="row m-0">
-        {artes.map(arte => <Arte arte={arte} />)}
+        <div className="row m-0">
+        {artes.map(arte => <Arte key={arte.id} arte={arte} />)}
         </div>
       </div>
     </>
