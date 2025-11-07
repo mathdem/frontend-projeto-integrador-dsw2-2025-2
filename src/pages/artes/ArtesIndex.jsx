@@ -28,7 +28,7 @@ const ArtesIndex = () => {
         <Navbar />
         <h3>ArtesIndex</h3>
         <Link to="/artes/create" className='btn btn-primary'>Criar</Link>
-        <div class="row">
+        <div class="row m-0">
         {artes.map(arte => <Arte arte={arte} />)}
         </div>
       </div>
