@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import Image from '../../components/Image'
 import Navbar from '../../components/Navbar'
 import { Link } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 
 const ArtesCreate = () => {
     const [nome, setNome] = useState("");
@@ -10,6 +11,7 @@ const ArtesCreate = () => {
     const [palavras_chave, setPalavrasChave] = useState();
     const [descricao, setDescricao] = useState();
 
+    const navigate = useNavigate();
     const enviaFormulario = async(e) => {
         e.preventDefault();
         const dadosEnviados = JSON.stringify({
@@ -21,14 +23,20 @@ const ArtesCreate = () => {
             descricao,
             
         });
-        console.log(dadosEnviados);
-        const response = await fetch("http://localhost:3000/api/artes", {
-            method: "POST",
-            body: dadosEnviados,
-            headers: {
-                "Content-Type":"application/json" 
-            }
-        })
+
+try {
+            const response = await fetch("http://localhost:3000/api/artes", {
+                method: "POST",
+                body: dadosEnviados,
+                headers: {
+                    "Content-Type":"appNlication/json" 
+                }
+            });
+            if(!response.ok) throw new Error("Não foi possivel salvar");
+            navigate("/artes");
+} catch (error) {
+    console.log(error);
+}
     }
     return (
         <>

@@ -3,6 +3,7 @@ import React from 'react'
 import { Link, NavLink } from 'react-router-dom'
 import ThemeButton from './ThemeButton'
 
+
 const Navbar = () => {
   return (
     <nav className="navbar navbar-expand-lg bg-body-tertiary ">
