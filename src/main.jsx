@@ -13,12 +13,16 @@ import ArtesEdit from "./pages/artes/ArtesEdit.jsx";
 
 import "bootstrap/dist/css/bootstrap.min.css"
 import "bootstrap/dist/js/bootstrap.min.js"
+import Registrar from "./pages/Registrar.jsx";
+import Login from "./pages/login.jsx";
 
 const router = createBrowserRouter([
     { path: "/", element: <App /> },
     { path: "/sobre", element: <Sobre /> },
     { path: "/contato", element: <Contato /> },
     { path: "/artes", element: <ArtesIndex />},
+    { path: "/registrar", element: <Registrar />},
+    { path: "/login", element: <Login />},
     { path: "/artes/Create", element: <ArtesCreate />},
     { path: "/artes/:id", element: <ArtesShow />},
     { path: "/artes/:id/edit", element: <ArtesEdit />}

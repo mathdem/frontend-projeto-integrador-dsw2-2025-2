@@ -41,7 +41,7 @@ try {
     return (
         <>
             <Navbar />
-            <div className='text-center fs-4 m-2'>
+            <div className=' fs-4 m-5'>
                 <form onSubmit={enviaFormulario}>
                     <Image />
                     <input type="file" 
@@ -51,7 +51,7 @@ try {
                         <label htmlFor="">Nome</label><br />
                         <input
                          type="text" 
-                         className='border rounded p-2'
+                         className='border rounded p-2 '
                          value={nome}
                          onChange={(e) => setNome(e.target.value)}
                         /> <br />
