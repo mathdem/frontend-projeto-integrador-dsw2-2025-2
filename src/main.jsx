@@ -2,9 +2,14 @@
 import { createRoot } from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
+
+
 import App from "./pages/App.jsx";
 import Sobre from "./pages/Sobre.jsx";
 import Contato from "./pages/Contato.jsx";
+import Registrar from "./pages/Registrar.jsx";
+import Login from "./pages/login.jsx";
+import Profile from "./pages/Profile.jsx";
 
 import ArtesIndex from "./pages/artes/ArtesIndex.jsx";
 import ArtesCreate from "./pages/artes/ArtesCreate.jsx";
@@ -13,8 +18,6 @@ import ArtesEdit from "./pages/artes/ArtesEdit.jsx";
 
 import "bootstrap/dist/css/bootstrap.min.css"
 import "bootstrap/dist/js/bootstrap.min.js"
-import Registrar from "./pages/Registrar.jsx";
-import Login from "./pages/login.jsx";
 
 const router = createBrowserRouter([
     { path: "/", element: <App /> },
@@ -23,7 +26,8 @@ const router = createBrowserRouter([
     { path: "/artes", element: <ArtesIndex />},
     { path: "/registrar", element: <Registrar />},
     { path: "/login", element: <Login />},
-    { path: "/artes/Create", element: <ArtesCreate />},
+    { path: "/profile", element: <Profile />},
+    { path: "/artes/create", element: <ArtesCreate />},
     { path: "/artes/:id", element: <ArtesShow />},
     { path: "/artes/:id/edit", element: <ArtesEdit />}
 ]);
