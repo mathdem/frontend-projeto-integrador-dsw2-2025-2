@@ -10,6 +10,8 @@ import Contato from "./pages/Contato.jsx";
 import Registrar from "./pages/Registrar.jsx";
 import Login from "./pages/login.jsx";
 import Profile from "./pages/Profile.jsx";
+import DashboardAdmin from "./pages/DashboardAdmin.jsx";
+import DashboardUser from "./pages/DashboardUser.jsx";
 
 import ArtesIndex from "./pages/artes/ArtesIndex.jsx";
 import ArtesCreate from "./pages/artes/ArtesCreate.jsx";
@@ -27,6 +29,8 @@ const router = createBrowserRouter([
     { path: "/registrar", element: <Registrar />},
     { path: "/login", element: <Login />},
     { path: "/profile", element: <Profile />},
+    { path: "/dashboard/admin", element: <DashboardAdmin />},
+    { path: "/dashboard/user", element: <DashboardUser />},
     { path: "/artes/create", element: <ArtesCreate />},
     { path: "/artes/:id", element: <ArtesShow />},
     { path: "/artes/:id/edit", element: <ArtesEdit />}

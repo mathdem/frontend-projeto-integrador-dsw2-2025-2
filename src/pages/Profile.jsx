@@ -1,82 +1,155 @@
-import { useState, useContext } from "react";
-import { AuthContext } from "../context/Context";
-import api from "../services/api";
-import { useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import Navbar from '../components/Navbar';
 
-export default function Profile() {
-  const { user, setUser, logout } = useContext(AuthContext);
-  const [form, setForm] = useState(() => ({
-    nome: user?.nome ?? "",
-    email: user?.email ?? "",
-    senha: ""
-  }));
-  const navigate = useNavigate();
+const Profile = () => {
+    const navigate = useNavigate();
+    const [user, setUser] = useState(null);
+    const [form, setForm] = useState({ nome: "", email: "", senha: "" });
 
-  const handleUpdate = async (e) => {
-    e.preventDefault();
-    try {
-      // Chama a rota PUT que criamos no passo 1
-      const { data } = await api.put(`/usuarios/${user.id}`, form);
-      setUser({ ...user, ...data }); // Atualiza contexto
-      alert("Perfil atualizado!");
-      setForm({ ...form, senha: "" }); // Limpa senha
-    } catch (error) {
-      alert("Erro ao atualizar: " + error.response?.data?.erro);
-    }
-  };
+    // Carrega dados do localStorage ao iniciar
+    useEffect(() => {
+        const storedUser = localStorage.getItem("user");
+        if (!storedUser) {
+            navigate("/login");
+            return;
+        }
+        const parsedUser = JSON.parse(storedUser);
+        setUser(parsedUser);
+        setForm({ nome: parsedUser.nome, email: parsedUser.email, senha: "" });
+    }, [navigate]);
 
-  const handleDelete = async () => {
-    if (window.confirm("Tem certeza? Esta ação é irreversível.")) {
-      try {
-        // Chama a rota DELETE que criamos no passo 1
-        await api.delete(`/usuarios/${user.id}`);
-        logout();
-        alert("Conta excluída.");
-        navigate("/");
-      } catch (error) {
-        alert("Erro ao excluir: " + error.response?.data?.erro);
-      }
-    }
-  };
+    const handleLogout = async () => {
+        try {
+            await fetch("http://localhost:3000/api/usuarios/logout", { method: "POST" });
+        } catch (e) {
+            console.error("Erro ao fazer logout no backend", e);
+        }
+        localStorage.clear();
+        navigate("/login");
+    };
 
-  if (!user) return <p>Carregando...</p>;
+    const handleUpdate = async (e) => {
+        e.preventDefault();
+        const token = localStorage.getItem("token");
 
-  return (
-    <div style={{ padding: 20 }}>
-      <h2>Meu Perfil</h2>
-      <p>Bem-vindo, {user.nome}</p>
+        // Prepara os dados para envio.
+        const dadosParaEnviar = {
+            nome: form.nome,
+            email: form.email,
+            senha: form.senha 
+        };
 
-      <form onSubmit={handleUpdate} style={{ border: "1px solid #ccc", padding: 15 }}>
-        <h3>Editar Dados</h3>
-        <label>Nome: </label>
-        <input 
-          value={form.nome} 
-          onChange={e => setForm({...form, nome: e.target.value})} 
-        />
-        <br/><br/>
-        <label>Email: </label>
-        <input 
-          type="email"
-          value={form.email} 
-          onChange={e => setForm({...form, email: e.target.value})} 
-        />
-        <br/><br/>
-        <label>Nova Senha (deixe em branco para manter): </label>
-        <input 
-          type="password"
-          value={form.senha} 
-          onChange={e => setForm({...form, senha: e.target.value})} 
-        />
-        <br/><br/>
-        <button type="submit">Salvar Alterações</button>
-      </form>
+        try {
+            const response = await fetch(`http://localhost:3000/api/usuarios/${user.id}`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`
+                },
+                body: JSON.stringify(dadosParaEnviar)
+            });
 
-      <br/>
-      <button onClick={handleDelete} style={{ backgroundColor: "red", color: "white" }}>
-        Excluir Minha Conta
-      </button>
-      <br/><br/>
-      <button onClick={logout}>Sair (Logout)</button>
-    </div>
-  );
+            const data = await response.json();
+
+            if (!response.ok) {
+                alert(data.erro || "Erro ao atualizar");
+                return;
+            }
+
+            // Atualiza localStorage e estado
+            const newUser = { ...user, ...data };
+            localStorage.setItem("user", JSON.stringify(newUser));
+            setUser(newUser);
+            setForm({ ...form, senha: "" }); // Limpa a senha por segurança
+            alert("Perfil atualizado com sucesso!");
+
+        } catch (error) {
+            console.error(error);
+            alert("Erro de conexão.");
+        }
+    };
+
+    const handleDelete = async () => {
+        if (!window.confirm("Tem certeza que deseja excluir sua conta? Esta ação não pode ser desfeita.")) return;
+
+        const token = localStorage.getItem("token");
+        try {
+            const response = await fetch(`http://localhost:3000/api/usuarios/${user.id}`, {
+                method: "DELETE",
+                headers: {
+                    "Authorization": `Bearer ${token}`
+                }
+            });
+
+            if (!response.ok) {
+                const data = await response.json();
+                alert(data.erro || "Erro ao excluir conta");
+                return;
+            }
+
+            alert("Conta excluída.");
+            localStorage.clear();
+            navigate("/");
+
+        } catch (error) {
+            console.error(error);
+            alert("Erro de conexão.");
+        }
+    };
+
+    if (!user) return <p>Carregando...</p>;
+
+    return (
+        <>
+        <Navbar />
+            <div>
+                <div>
+                    <h1>Perfil de {user.nome}</h1>
+                    <p>Papel: {user.papel === 0 ? "Administrador" : "Usuário"}</p>
+                    <p>ID: {user.id}</p>
+
+                    <hr />
+
+                    <h3>Editar Dados</h3>
+                    <form onSubmit={handleUpdate}>
+                        <div>
+                            <label>Nome</label>
+                            <input 
+                                type="text" 
+                                value={form.nome} 
+                                onChange={e => setForm({...form, nome: e.target.value})} 
+                            />
+                        </div>
+                        <div>
+                            <label>Email</label>
+                            <input 
+                                type="email" 
+                                value={form.email} 
+                                onChange={e => setForm({...form, email: e.target.value})} 
+                            />
+                        </div>
+                        <div>
+                            <label>Nova Senha (deixe vazio para não alterar)</label>
+                            <input 
+                                type="password" 
+                                value={form.senha} 
+                                onChange={e => setForm({...form, senha: e.target.value})} 
+                            />
+                        </div>
+                        <button type="submit">Salvar Alterações</button>
+                    </form>
+
+                    <hr />
+
+                    <div>
+                        <button onClick={handleDelete}>Excluir Conta</button>
+                        <button onClick={handleLogout}>Sair (Logout)</button>
+                    </div>
+                </div>
+            </div>
+        </>
+    )
 }
+
+export default Profile
