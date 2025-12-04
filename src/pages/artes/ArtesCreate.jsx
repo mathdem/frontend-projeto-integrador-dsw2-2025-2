@@ -10,9 +10,21 @@ const ArtesCreate = () => {
     const [data_concepcao, setDataConcepcao] = useState();
     const [palavras_chave, setPalavrasChave] = useState();
     const [descricao, setDescricao] = useState();
+    const [erro, setErro] = useState("");
+
+
 
     const navigate = useNavigate();
     const enviaFormulario = async(e) => {
+        e.preventDefault();
+        setErro("");
+
+        const token = localStorage.getItem('token');
+    if (!token) {
+        setErro("Você precisa estar logado para postar sua arte.");
+        return;
+    }
+
         e.preventDefault();
         const dadosEnviados = JSON.stringify({
             "Usuarios_id": 1,
@@ -29,7 +41,7 @@ try {
                 method: "POST",
                 body: dadosEnviados,
                 headers: {
-                    "Content-Type":"appNlication/json" 
+                    "Content-Type":"application/json" 
                 }
             });
             if(!response.ok) throw new Error("Não foi possivel salvar");
@@ -54,7 +66,7 @@ try {
                          className='border rounded p-2 '
                          value={nome}
                          onChange={(e) => setNome(e.target.value)}
-                        /> <br />
+                         /> <br />
                         <br />
                         <label htmlFor="">data</label> <br />
                         <input 
@@ -79,12 +91,13 @@ try {
                          id="" 
                          className='border rounded p-2'
                          value={descricao}
-                        onChange={(e) => setDescricao(e.target.value)}
-                        ></textarea> <br />
+                         onChange={(e) => setDescricao(e.target.value)}
+                         ></textarea> <br />
                         <br />
                         <button type='submit'className="border rounded px-2 pt-1 pb-2">
                             <span>postar</span>
                         </button>
+            {erro && <div >{erro}</div>}
                     </div>
                 </form>
                 <Link to="/artes" className="bg-purple text-light border rounded p-3 m-2">Voltar</Link>

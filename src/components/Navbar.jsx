@@ -26,7 +26,6 @@ const Navbar = () => {
 
             </li>
           </ul>
-            <ThemeButton />
         </div>
       </div>
     </nav>

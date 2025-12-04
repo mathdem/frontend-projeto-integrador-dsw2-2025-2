@@ -50,7 +50,7 @@ const Login = () => {
         <div className='text-center m-3'>
         <img className="w-50 h-auto " src="/sejaBemVindo.gif" alt="Imagem placeholder"/>
             <h1 className='purple'>Entrar</h1>
-            <div className='p-4 border-purple'>
+            <div className='p-4 border-purple m-5'>
               <div className='p-2'>
                 <form onSubmit={handleLogin}>
                     <div className='m-2'>

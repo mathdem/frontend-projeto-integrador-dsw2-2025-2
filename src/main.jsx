@@ -17,6 +17,7 @@ import ArtesIndex from "./pages/artes/ArtesIndex.jsx";
 import ArtesCreate from "./pages/artes/ArtesCreate.jsx";
 import ArtesShow from "./pages/artes/ArtesShow.jsx";
 import ArtesEdit from "./pages/artes/ArtesEdit.jsx";
+import ArtesListar from "./pages/artes/ArtesListar.jsx";
 
 import "bootstrap/dist/css/bootstrap.min.css"
 import "bootstrap/dist/js/bootstrap.min.js"
@@ -33,7 +34,9 @@ const router = createBrowserRouter([
     { path: "/dashboard/user", element: <DashboardUser />},
     { path: "/artes/create", element: <ArtesCreate />},
     { path: "/artes/:id", element: <ArtesShow />},
-    { path: "/artes/:id/edit", element: <ArtesEdit />}
+    { path: "/artes/edit/:id", element: <ArtesEdit />},
+    { path: "/artes/listar", element: <ArtesListar />}
+
 ]);
 createRoot(document.getElementById("root")).render(
     <RouterProvider router={router} />
