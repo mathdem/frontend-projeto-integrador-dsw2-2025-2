@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import Navbar from '../../components/Navbar'
 import { useParams, useNavigate } from 'react-router-dom'
+import Image from '../../components/Image';
 
 const ArtesEdit = () => {
   const { id } = useParams(); // Pega o ID da URL
@@ -8,7 +9,9 @@ const ArtesEdit = () => {
 
   const [Usuarios_id, setUsuarios_Id] = useState("");
   const [descricao, setDescricao] = useState("");
-  const [artes, setArtes] = useState("");
+  const [nome, setNome] = useState("");
+  const [palavras_chave, setPalavras_chave] = useState("");
+  const [url_imagem, setUrl_imagem] = useState("");
   const [erro, setErro] = useState(null);
 
   // Carregar dados da artes ao abrir a tela
@@ -28,7 +31,10 @@ const ArtesEdit = () => {
             // Preenche os estados com os dados recebidos
             setUsuarios_Id(data.Usuarios_id);
             setDescricao(data.descricao); 
-            setArtes(data.artes);
+            setNome(data.nome);
+            setPalavras_chave(data.palavras_chave); 
+            setUrl_imagem(data.url_imagem); 
+
 
         } catch (error) {
             setErro(error.message);
@@ -44,8 +50,10 @@ const ArtesEdit = () => {
 
     const dadosAtualizados = {
         Usuarios_id: Number(Usuarios_id),
-        Usuarios_id_destinatario: Number(Usuarios_id_destinatario),
-        artes
+        descricao: descricao,
+        nome: nome,
+        palavras_chave: palavras_chave,
+        url_imagem: url_imagem
     };
 
     try {
@@ -71,19 +79,48 @@ const ArtesEdit = () => {
   return (
     <>
       <Navbar />
-      <div className='container mt-4'>
+      <div className=' fs-4 m-5'>
         {erro && <div className="alert alert-danger">{erro}</div>}
         
-        <form onSubmit={handleUpdate}>
-            <div className='card border-secondary p-4'>
-                <p className='fs-2 text-center'>Editar artes #{id}</p>
+        <form onSubmit={handleUpdate} className='m-5'>
+            <div className="text-center">
+                <Image />
+            </div>
+            <div className='bg-purple text-light m-5 border rounded p-5'>
+                     <h1>Editar arte "{nome}"</h1>
                 
                 <div className="mb-3">
-                    <label className='form-label' htmlFor="usuario">ID Remetente:</label>
+                    <label className='form-label' htmlFor="nomeArte">Nome:</label>
+                    <input 
+                        className='form-control' 
+                        type="text" 
+                        id="nomeArte"  
+                        name='nome'
+                        value={nome} 
+                        onChange={(e) => setNome(e.target.value)}
+                        required
+                    />
+                </div>
+
+                <div className="mb-3">
+                    <label className='form-label' htmlFor="imagem">imagem:</label>
+                    <input 
+                        className='form-control' 
+                        type="file" 
+                        id="imagem"  
+                        name='url_imagem'
+                        onChange={(e) => setUrl_imagem(e.target.value)}
+                        required
+                    />
+                </div>
+
+                <div className="mb-3">
+                    <label className='form-label' htmlFor="usuario">ID</label>
                     <input 
                         className='form-control' 
                         type="number" 
                         id="usuario"  
+                        name='usuario'
                         value={Usuarios_id} 
                         onChange={(e) => setUsuarios_Id(e.target.value)}
                         required
@@ -91,14 +128,29 @@ const ArtesEdit = () => {
                 </div>
                 
                 <div className='mb-3'>
-                    <label htmlFor="descricao" className='form-label'>descrição:</label>
+                    <label htmlFor="desc" className='form-label'>descrição:</label>
                     <textarea 
-                        id="descricao" 
+                        id="desc" 
                         className='form-control' 
+                        name='descricao'
+                         type="text"
                         rows="4"
-                      
                         value={descricao} 
-                        onChange={(e) => setArtes(e.target.value)}
+                        onChange={(e) => setDescricao(e.target.value)}
+                        required
+                    ></textarea>
+                </div>
+
+                <div className='mb-3'>
+                    <label htmlFor="palavrasChave" className='form-label'>Palavras Chave:</label>
+                    <textarea 
+                        id="palavrasChave" 
+                        className='form-control' 
+                        type="text"
+                        name='palavras_chave'
+                        rows="4"
+                        value={palavras_chave} 
+                        onChange={(e) => setPalavras_chave(e.target.value)}
                         required
                     ></textarea>
                 </div>
@@ -111,8 +163,6 @@ const ArtesEdit = () => {
                 </button>
             </div>
         </form>
-      </div>
-      <div className="mt-5">
       </div>
     </>
   )

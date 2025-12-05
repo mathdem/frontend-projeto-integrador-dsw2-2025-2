@@ -15,15 +15,15 @@ const ArtesCreate = () => {
 
 
     const navigate = useNavigate();
-    const enviaFormulario = async(e) => {
+    const enviaFormulario = async (e) => {
         e.preventDefault();
         setErro("");
 
         const token = localStorage.getItem('token');
-    if (!token) {
-        setErro("Você precisa estar logado para postar sua arte.");
-        return;
-    }
+        if (!token) {
+            setErro("Você precisa estar logado para postar sua arte.");
+            return;
+        }
 
         e.preventDefault();
         const dadosEnviados = JSON.stringify({
@@ -33,74 +33,95 @@ const ArtesCreate = () => {
             data_concepcao,
             palavras_chave,
             descricao,
-            
+
         });
 
-try {
+        try {
             const response = await fetch("http://localhost:3000/api/artes", {
                 method: "POST",
                 body: dadosEnviados,
                 headers: {
-                    "Content-Type":"application/json" 
+                    "Content-Type": "application/json"
                 }
             });
-            if(!response.ok) throw new Error("Não foi possivel salvar");
+            if (!response.ok) throw new Error("Não foi possivel salvar");
             navigate("/artes");
-} catch (error) {
-    console.log(error);
-}
+        } catch (error) {
+            console.log(error);
+        }
     }
     return (
         <>
             <Navbar />
-            <div className=' fs-4 m-5'>
-                <form onSubmit={enviaFormulario}>
-                    <Image />
-                    <input type="file" 
-                    value={imagem}
-                    onChange={(e) => setImagem(e.target.value)}/>
+            <div className=' fs-4 m-5 '>
+                <form onSubmit={enviaFormulario} className='m-5'>
+                    <div className="text-center">
+                        <Image />
+                    </div>
                     <div className="bg-purple text-light m-5 border rounded p-5">
-                        <label htmlFor="">Nome</label><br />
-                        <input
-                         type="text" 
-                         className='border rounded p-2 '
-                         value={nome}
-                         onChange={(e) => setNome(e.target.value)}
-                         /> <br />
-                        <br />
-                        <label htmlFor="">data</label> <br />
-                        <input 
-                        type="date" 
-                        className="border rounded p-2" 
-                        value={data_concepcao}
-                        onChange={(e) => setDataConcepcao(e.target.value)}
-                        /> <br />
-                        <br />
-                        <label htmlFor="">palavras chave</label> <br />
-                        <textarea 
-                        name="" 
-                        id="" 
-                        className='border rounded p-2'
-                        value={palavras_chave}
-                        onChange={(e) => setPalavrasChave(e.target.value)}
-                        ></textarea> <br />
-                        <br />
-                        <label htmlFor="">Descrição</label> <br />
-                        <textarea
-                         name="" 
-                         id="" 
-                         className='border rounded p-2'
-                         value={descricao}
-                         onChange={(e) => setDescricao(e.target.value)}
-                         ></textarea> <br />
-                        <br />
-                        <button type='submit'className="border rounded px-2 pt-1 pb-2">
-                            <span>postar</span>
+                        <h1 className='text-center'>Criar Arte</h1>
+
+                        <div className='mb-3'>
+                            <label htmlFor="" className='form-label'> Selecione a imagem</label> <br />
+                            <input type="file"
+                                className=''
+                                value={imagem}
+                                onChange={(e) => setImagem(e.target.value)} />
+                        </div>
+
+                        <div className="mb-3">
+                            <label htmlFor="" className='form-label'>Nome</label><br />
+                            <input
+                                type="text"
+                                className='border rounded p-2 '
+                                value={nome}
+                                onChange={(e) => setNome(e.target.value)}
+                            />
+                        </div>
+
+                        <div className="mb-3">
+                            <label htmlFor="" className='form-label'>Data</label> <br />
+                            <input
+                                type="date"
+                                className="border rounded p-2"
+                                value={data_concepcao}
+                                onChange={(e) => setDataConcepcao(e.target.value)}
+                            />
+                        </div>
+
+                        <div className='mb-3'>
+                            <label htmlFor="" className='form-label'>Palavras chave</label> <br />
+                            <textarea
+                                name=""
+                                id=""
+                                className='border rounded p-2'
+                                value={palavras_chave}
+                                onChange={(e) => setPalavrasChave(e.target.value)}
+                            ></textarea>
+                        </div>
+
+                        <div className='mb-3'>
+
+
+                            <label htmlFor="" className='form-label'>Descrição</label> <br />
+                            <textarea
+                                name=""
+                                id=""
+                                className='border rounded p-2'
+                                value={descricao}
+                                onChange={(e) => setDescricao(e.target.value)}
+                            ></textarea>
+
+                        </div>
+
+
+                        <button type='submit' className="border rounded px-2 pt-1 pb-2">
+                            <span>Postar</span>
                         </button>
-            {erro && <div >{erro}</div>}
+                        {erro && <div >{erro}</div>}
+                        <Link to="/artes" className="bg-purple text-light border border-3 rounded px-2 pt-1 pb-2 m-5">Voltar</Link>
                     </div>
                 </form>
-                <Link to="/artes" className="bg-purple text-light border rounded p-3 m-2">Voltar</Link>
             </div>
         </>
     )
