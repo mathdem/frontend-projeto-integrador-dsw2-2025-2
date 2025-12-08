@@ -1,83 +1,94 @@
-import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
+
 
 const DashboardAdmin = () => {
-    const navigate = useNavigate();
-    const [user, setUser] = useState(null);
-    const [listaUsuarios, setListaUsuarios] = useState([]);
+    const [artes, setArtes] = useState([]);
+    const [erro, setErro] = useState(null);
 
-    useEffect(() => {
-        const storedUser = localStorage.getItem("user");
-        if (!storedUser) {
-            navigate("/usuarios/login");
-            return;
-        }
-        const parsedUser = JSON.parse(storedUser);
+    // Função para deletar
+    const handleDelete = async (id) => {
+        if (!confirm("Tem certeza que deseja excluir?")) return;
         
-        // Verificação de papel (0 = Admin)
-        if (parsedUser.papel !== 0) {
-            alert("Acesso negado. Esta área é restrita para Administradores.");
-            navigate("/dashboard/user"); // Redireciona para o dashboard correto
-            return;
-        }
-        setUser(parsedUser);
+        const token = localStorage.getItem("token"); // Assumindo que guardou o token aqui
+        
+        try {
+            const response = await fetch(`http://localhost:3000/api/artes/${id}`, {
+                method: "DELETE",
+                headers: {
+                    "Authorization": `Bearer ${token}`
+                }
+            });
 
-        // Busca lista de usuários (Apenas Admin vê isso neste exemplo)
-        const fetchUsuarios = async () => {
-            try {
-                // A rota GET /api/usuarios é pública no backend atual, mas aqui consumimos como exemplo de dado admin
-                const response = await fetch("http://localhost:3000/api/usuarios");
-                const data = await response.json();
-                setListaUsuarios(data);
-            } catch (error) {
-                console.error("Erro ao buscar usuários:", error);
+            if (response.ok) {
+                // Remove da tela sem recarregar a página
+                setArtes(artes.filter(m => m.id !== id));
+            } else {
+                alert("Erro ao excluir. Verifique se você tem permissão.");
             }
-        };
-        fetchUsuarios();
+        } catch (error) {
+            console.error(error);
+            alert("Erro de conexão.");
+        }
+    };
 
-    }, [navigate]);
+    // Função para carregar artes
+    useEffect(() => {
+        const fetchartes = async () => {
+            const token = localStorage.getItem("token");
+            try {
+                const response = await fetch("http://localhost:3000/api/artes", {
+                    headers: {
+                        "Authorization": `Bearer ${token}`
+                    }
+                });
+                if(!response.ok) throw new Error("Erro ao buscar dados");
+                const data = await response.json();
+                setArtes(data);
+            } catch (err) {
+                setErro(err.message);
+            }
+        }
+        fetchartes();
+    }, []);
 
-    if (!user) return null;
+    if (erro) return <div className="alert alert-danger">{erro}</div>;
 
     return (
-        <>
-            <div>
-                <div>
-                    <div>
-                        <h1>Painel do Administrador</h1>
-                        <p>Bem-vindo, {user.nome} (ID: {user.id}).</p>
-                        <p>Você tem acesso total ao gerenciamento do sistema.</p>
-                        <button onClick={() => navigate("/profile")}>Meu Perfil</button>
+        <div className='row'>
+            {artes.map(artes =>
+                <div className='col-lg-6 col-12 my-2' key={artes.id}>
+                    <div className="card text-center h-100">
+                        <div className="card-header d-flex justify-content-between">
+                            <span>Usuario: {artes.Usuarios_id}</span>
+                            <span>Nome: {artes.nome}</span>
+                            <span>descrição: {artes.descricao}</span>
+                            <span>imagem: {artes.url_imagem}</span>
+                            <span>Palavras chave: {artes.palavras_chave}</span>
+                            <span>data de concepção: {artes.data_concepcao}</span>
+                            <span>data de criação: {artes.data_criacao}</span>
+                            <span>data atualização: {artes.data_atualizacao}</span>
+                        </div>
+                        <div className="card-body">
+                            <h5 className="card-title">ID: {artes.id}</h5>
+                            <p className="card-text text-start p-2 bg-light rounded">{artes.artes}</p>
+                            <div className="d-flex justify-content-center gap-2 mt-3">
+                                <Link to={`/artes/edit/${artes.id}`} className='btn btn-primary'>
+                                    <i className="bi bi-pencil"></i> Editar
+                                </Link>
+                                <button onClick={() => handleDelete(artes.id)} className='btn btn-danger'>
+                                    <i className="bi bi-trash"></i> Excluir
+                                </button>
+                            </div>
+                        </div>
+                        <div className="card-footer text-body-secondary">
+                           Enviado em: {new Date(artes.data_criacao || Date.now()).toLocaleDateString()}
+                        </div>
                     </div>
                 </div>
+            )}
+        </div>
+    )
+}
 
-                <h2>Gestão de Usuários</h2>
-                <div>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Nome</th>
-                                <th>Ações</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {listaUsuarios.map((u) => (
-                                <tr key={u.id}>
-                                    <td>{u.id}</td>
-                                    <td>{u.nome}</td>
-                                    <td>
-                                        <button>Detalhes</button>
-                                        <button>Remover</button>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </>
-    );
-};
-
-export default DashboardAdmin;
+export default DashboardAdmin

@@ -27,6 +27,7 @@ const ArtesIndex = () => {
       <div>
         <Navbar />
         <h3>ArtesIndex</h3>
+       
         <center><img className="w-50 h-auto " src="/W_arts.gif" alt="Imagem placeholder" /></center>
         <Link to="/artes/create" className='btn btn-primary'>Criar</Link>
         <div className="row m-0">

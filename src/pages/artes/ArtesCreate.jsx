@@ -5,14 +5,13 @@ import { Link } from 'react-router-dom'
 import { useNavigate } from 'react-router-dom'
 
 const ArtesCreate = () => {
+    const [Usuarios_id, setUsuarios_Id] = useState("");
     const [nome, setNome] = useState("");
-    const [imagem, setImagem] = useState("");
+    const [url_imagem, setUrl_imagem] = useState(null);
     const [data_concepcao, setDataConcepcao] = useState();
     const [palavras_chave, setPalavrasChave] = useState();
     const [descricao, setDescricao] = useState();
     const [erro, setErro] = useState("");
-
-
 
     const navigate = useNavigate();
     const enviaFormulario = async (e) => {
@@ -25,23 +24,24 @@ const ArtesCreate = () => {
             return;
         }
 
-        e.preventDefault();
-        const dadosEnviados = JSON.stringify({
-            "Usuarios_id": 1,
-            nome,
-            "url_imagem": imagem,
-            data_concepcao,
-            palavras_chave,
-            descricao,
+         // Para envio de arquivos, usamos FormData
+    const formData = new FormData();
+    formData.append("Usuarios_id", Usuarios_id);
+    formData.append("nome", nome);
+    formData.append("data_concepcao", data_concepcao);
+    formData.append("palavras_chave", palavras_chave);
+    formData.append("descricao", descricao);
 
-        });
+    if (url_imagem) {
+        formData.append("url_imagem", url_imagem); // 'imagem' deve ser o mesmo nome usado no upload.single('imagem') do backend
+    }
 
         try {
             const response = await fetch("http://localhost:3000/api/artes", {
                 method: "POST",
-                body: dadosEnviados,
+                body: formData,
                 headers: {
-                    "Content-Type": "application/json"
+                        'Authorization': `Bearer ${token}`
                 }
             });
             if (!response.ok) throw new Error("Não foi possivel salvar");
@@ -65,8 +65,8 @@ const ArtesCreate = () => {
                             <label htmlFor="" className='form-label'> Selecione a imagem</label> <br />
                             <input type="file"
                                 className=''
-                                value={imagem}
-                                onChange={(e) => setImagem(e.target.value)} />
+                                accept="image/*"
+                                onChange={(e) => setUrl_imagem(e.target.files[0])}  />
                         </div>
 
                         <div className="mb-3">
