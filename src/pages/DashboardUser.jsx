@@ -1,64 +1,41 @@
-import React, { useEffect, useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import React, { useEffect } from 'react'
+import Navbar from '../components/Navbar'
+import Arte from '../components/Arte';
+import { Link } from 'react-router-dom';
 
 const DashboardUser = () => {
-    const navigate = useNavigate();
-    const [user, setUser] = useState(null);
+ const [artes, setArtes] = React.useState([]);
 
-    useEffect(() => {
-        const storedUser = localStorage.getItem("user");
-        if (!storedUser) {
-            navigate("/login");
-            return;
-        }
-        const parsedUser = JSON.parse(storedUser);
+  //Crio o useEffecr (serve para fazer consulta em APIS)
+  useEffect(() => {
+    //Dentro do userEffect crio a função abaixo e declaro ela como async
+    //declaramos ela como async pois iremos utilizar await dentro dela
+    const fetchArtes = async () => {
+      const response = await fetch("http://localhost:3000/api/artes")
+      // console.log(response);
+      const data = await response.json(); //converto os dados dentro de response para JSON
+      // console.log(data);
+      setArtes(data);
+    }
+    fetchArtes(); //chamando a função que foi declarada acima
+  }, []);
+  //[]significa que o useEffect vai rodar apenas 1 vez
+  //depois do prinmeiro render
 
-        // Verificação de papel (1 = Usuário)
-        if (parsedUser.papel !== 1) {
-            // Se for admin tentando acessar, pode redirecionar ou apenas avisar
-            if (parsedUser.papel === 1) {
-                navigate("/dashboard/admin");
-                return;
-            }
-        }
-        setUser(parsedUser);
-    }, [navigate]);
+  return (
+    <>
+      <div>
+        <Navbar />
+        <h3>ArtesIndex</h3>
+       
+        <center><img className="w-50 h-auto " src="/W_arts.gif" alt="Imagem placeholder" /></center>
+        <div className="row m-0">
+        {artes.map(arte => <Arte key={arte.id} arte={arte} />)}
+        </div>
+      </div>
+    </>
+  )
+}
 
-    if (!user) return null;
+export default DashboardUser
 
-    return (
-        <>
-            <div>
-                <div>
-                    <div>
-                        <h1>Olá, {user.nome}!</h1>
-                        <p>Bem-vindo ao seu painel de usuário.</p>
-                        <div>
-                            <Link to="/artes">Ver Artes</Link>
-                            <Link to="/artes/create">Nova Arte</Link>
-                        </div>
-                    </div>
-                </div>
-
-                <div>
-                    <div>
-                        <div>
-                            <h2>Minha Conta</h2>
-                            <p>Gerencie suas informações pessoais, email e senha de acesso.</p>
-                            <Link to="/profile">Ir para Perfil</Link>
-                        </div>
-                    </div>
-                    <div>
-                        <div>
-                            <h2>Suporte</h2>
-                            <p>Precisa de ajuda? Entre em contato com a administração ou veja o sobre nós.</p>
-                            <Link to="/contato">Contato</Link>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </>
-    );
-};
-
-export default DashboardUser;

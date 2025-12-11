@@ -1,11 +1,13 @@
 import React from 'react'
 
+
 const Arte = ({ arte }) => {
+    
     return (
         <div className='col-4 p-0'>
             <div className='p-0 m-1'>
                 <div className="card p-1 ">
-                <img src={`http://localhost:3000/uploads/${arte.url_imagem}`}></img>
+                <img src={arte.url_imagem}></img>
                     <strong className='text-truncate'>{arte.id} - {arte.descricao}</strong>
                 </div>
             </div>

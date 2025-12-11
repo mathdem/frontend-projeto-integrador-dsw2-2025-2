@@ -25,6 +25,9 @@ const Navbar = () => {
               <NavLink className="nav-link text-light" to="/profile">Perfil</NavLink>
 
             </li>
+            <li className="nav-item">
+            <NavLink  className="nav-link text-light" to="/artes/create">Criar</NavLink>
+            </li>
         </ul>
         </div>
       </div>
