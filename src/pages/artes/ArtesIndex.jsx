@@ -26,11 +26,11 @@ const ArtesIndex = () => {
     <>
       <div>
         <Navbar />
-        <h3>ArtesIndex</h3>
-       
-        <center><img className="w-50 h-auto " src="/W_arts.gif" alt="Imagem placeholder" /></center>
-        <div className="row m-0">
-        {artes.map(arte => <Arte key={arte.id} arte={arte} />)}
+        <div className="text-center">
+        <img className="w-50 h-auto " src="/trabalhandoNisso.gif" alt="Imagem placeholder" />
+        <h3 className="purple">Novas Informações aqui EM BREVE</h3>
+        <p>caso queria ver mais coisas, va para o dashboard/<Link to="/dashboard/user">User</Link>/<Link to="/dashboard/admin">Admin</Link></p>
+
         </div>
       </div>
     </>
